@@ -4,6 +4,8 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
   container: {
     minHeight: 46,
+    flexDirection: "row",
+    gap: 8,
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 16,
