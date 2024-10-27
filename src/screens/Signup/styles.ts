@@ -18,6 +18,7 @@ export const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "400",
     color: colors.gray[400],
+    textAlign: "center",
   },
   label: {
     fontSize: 16,

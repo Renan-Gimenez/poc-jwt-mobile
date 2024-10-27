@@ -61,9 +61,17 @@ export function Signup() {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <KeyboardAvoidingView style={styles.container}>
-        <View style={{ marginBottom: 40, alignItems: "center" }}>
+        <View
+          style={{
+            width: "90%",
+            marginBottom: 40,
+            alignItems: "center",
+          }}
+        >
           <Text style={styles.title}>Crie uma conta</Text>
-          <Text style={styles.subtitle}>Faça login e comece a usar!</Text>
+          <Text style={styles.subtitle}>
+            Preencha seus dados e comece a explorar!
+          </Text>
         </View>
 
         <View style={{ width: "80%", gap: 16 }}>
