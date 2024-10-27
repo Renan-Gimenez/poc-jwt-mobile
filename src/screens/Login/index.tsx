@@ -14,6 +14,7 @@ import { styles } from "./styles";
 
 import { Feather } from "@expo/vector-icons";
 import { colors } from "@/styles/colors";
+import { Link } from "@react-navigation/native";
 
 export function Login() {
   const [isLoading, setIsLoading] = useState(false);
@@ -99,6 +100,13 @@ export function Login() {
             <Button.Title>Entrar</Button.Title>
           </Button>
         </View>
+
+        <Text style={styles.linkText}>
+          Não possui uma conta?{" "}
+          <Link to="/signup" style={styles.link}>
+            Registre-se
+          </Link>
+        </Text>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );

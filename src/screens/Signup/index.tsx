@@ -13,6 +13,7 @@ import { Button, Input } from "@/components";
 import { useState } from "react";
 import { colors } from "@/styles/colors";
 import { useAuth } from "@/contexts/AuthContext";
+import { Link } from "@react-navigation/native";
 
 export function Signup() {
   const [username, setUsername] = useState("");
@@ -161,6 +162,13 @@ export function Signup() {
             </Button>
           </View>
         </View>
+
+        <Text style={styles.linkText}>
+          Já possui uma conta?{" "}
+          <Link to="/login" style={styles.link}>
+            Faça login
+          </Link>
+        </Text>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );

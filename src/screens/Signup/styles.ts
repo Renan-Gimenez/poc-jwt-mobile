@@ -36,4 +36,12 @@ export const styles = StyleSheet.create({
 
     textAlign: "center",
   },
+  linkText: {
+    color: colors.gray[400],
+    marginTop: 16,
+  },
+  link: {
+    color: colors.cyan[500],
+    fontWeight: "bold",
+  },
 });
