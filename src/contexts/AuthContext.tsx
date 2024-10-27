@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useContext, useState } from "react";
-import { loginRequest } from "../services/auth";
+import { loginRequest, signupRequest } from "../services/auth";
 
 interface User {
   id: string;
@@ -15,6 +15,15 @@ interface AuthContextProps {
     password,
   }: {
     username: any;
+    password: string;
+  }) => Promise<void>;
+  signup: ({
+    username,
+    email,
+    password,
+  }: {
+    username: string;
+    email: string;
     password: string;
   }) => Promise<void>;
   logout: () => Promise<void>;
@@ -61,6 +70,28 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   };
 
+  const signup = async ({
+    username,
+    email,
+    password,
+  }: {
+    username: string;
+    email: string;
+    password: string;
+  }) => {
+    try {
+      const response = await signupRequest({ username, email, password });
+
+      if (!response?.user) {
+        throw new Error("Resposta do servidor inválida");
+      }
+
+      setUser(response.user);
+    } catch (error: any) {
+      throw Error(error.message);
+    }
+  };
+
   const logout = async () => {
     try {
       setUser(null);
@@ -73,6 +104,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     isAuthenticated,
     user,
     login,
+    signup,
     logout,
   };
 
