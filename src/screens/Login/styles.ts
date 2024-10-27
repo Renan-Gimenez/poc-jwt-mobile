@@ -4,7 +4,6 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: "#fff",
     backgroundColor: colors.gray[900],
 
     alignItems: "center",
@@ -19,6 +18,7 @@ export const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "400",
     color: colors.gray[400],
+    textAlign: "center",
   },
   label: {
     fontSize: 16,
