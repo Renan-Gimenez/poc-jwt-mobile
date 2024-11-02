@@ -1,5 +1,6 @@
 import { useState } from "react";
 import {
+  ActivityIndicator,
   Keyboard,
   KeyboardAvoidingView,
   Text,
@@ -22,7 +23,7 @@ export function Login() {
   const [username, setUsername] = useState("renan");
   const [password, setPassword] = useState("senha123");
 
-  const { login } = useAuth();
+  const { login, isGettingToken } = useAuth();
 
   const handleLogin = async () => {
     try {
@@ -43,6 +44,21 @@ export function Login() {
       setIsLoading(false);
     }
   };
+
+  if (isGettingToken) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: colors.gray[900],
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <ActivityIndicator size="large" color={"white"} />
+      </View>
+    );
+  }
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
