@@ -1,5 +1,13 @@
-import { createContext, ReactNode, useContext, useState } from "react";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { loginRequest, signupRequest } from "../services/auth";
+import { deleteToken, getToken, saveToken } from "@/services/storage";
+import { api } from "@/services/api";
 
 interface User {
   id: string;
@@ -9,6 +17,7 @@ interface User {
 
 interface AuthContextProps {
   isAuthenticated: boolean;
+  isGettingToken: boolean;
   user: any;
   login: ({
     username,
@@ -49,6 +58,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null);
   const isAuthenticated = !!user;
 
+  const [isGettingToken, setIsGettingToken] = useState(true);
+
   const login = async ({
     username,
     password,
@@ -65,8 +76,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
       }
 
       setUser(response.user);
-    } catch (error: any) {
-      throw Error(error.message);
+      await saveToken(response.token);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      } else {
+        throw new Error("Erro desconhecido");
+      }
     }
   };
 
@@ -94,14 +110,58 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const logout = async () => {
     try {
+      await deleteToken();
       setUser(null);
     } catch (error) {
       console.error(error);
     }
   };
 
+  const recoverUser = async (token: string) => {
+    try {
+      const response = await api.get("/recover-user", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setUser(response.data);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      } else {
+        throw new Error("Erro desconhecido ao recuperar o usuário pelo token");
+      }
+    }
+  };
+
+  useEffect(() => {
+    (async () => {
+      try {
+        setIsGettingToken(true);
+
+        const token = await getToken();
+
+        if (!token) {
+          return console.log("Token não encontrado");
+        }
+
+        await recoverUser(token);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          console.error(error);
+        } else {
+          console.error("Erro desconhecido ao recuperar o usuário");
+        }
+      } finally {
+        setIsGettingToken(false);
+      }
+    })();
+  }, []);
+
   const value = {
     isAuthenticated,
+    isGettingToken,
     user,
     login,
     signup,
