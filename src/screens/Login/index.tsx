@@ -21,8 +21,8 @@ export function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-  const [username, setUsername] = useState("renan");
-  const [password, setPassword] = useState("senha123");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
   const { login, isGettingToken } = useAuth();
 
