@@ -103,8 +103,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
       }
 
       setUser(response.user);
-    } catch (error: any) {
-      throw Error(error.message);
+      await saveToken(response.token);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw Error(error.message);
+      } else {
+        throw Error("Erro desconhecido ao realizar o cadastro");
+      }
     }
   };
 
