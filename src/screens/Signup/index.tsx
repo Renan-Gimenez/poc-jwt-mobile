@@ -10,16 +10,21 @@ import { Feather } from "@expo/vector-icons";
 import { styles } from "./styles";
 
 import { Button, Input } from "@/components";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { colors } from "@/styles/colors";
 import { useAuth } from "@/contexts/AuthContext";
 import { Link } from "@react-navigation/native";
+
+import BottomSheet from "@gorhom/bottom-sheet";
+
+import { BottomSheetComponent } from "@/components/BottomSheet";
 
 export function Signup() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [confirmpassword, setConfirmPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -27,6 +32,8 @@ export function Signup() {
     useState(false);
 
   const { signup } = useAuth();
+
+  const bottomSheetRef = useRef<BottomSheet>(null);
 
   const handleSignup = async () => {
     try {
@@ -52,9 +59,14 @@ export function Signup() {
         password: password,
       });
     } catch (error: any) {
-      alert(error.message);
-      console.log("Erro ao fazer login", error.message);
+      if (error instanceof Error) {
+        setErrorMessage(error.message);
+      } else {
+        setErrorMessage("Erro inesperado ao cadastrar usuário");
+        console.log("Erro ao cadastrar usuário:", error.message);
+      }
     } finally {
+      bottomSheetRef.current?.expand();
       setIsLoading(false);
     }
   };
@@ -169,6 +181,37 @@ export function Signup() {
             Faça login
           </Link>
         </Text>
+
+        <BottomSheetComponent ref={bottomSheetRef}>
+          <Feather name="alert-circle" size={64} color={colors.gray[400]} />
+
+          <View
+            style={{
+              flex: 1,
+              alignItems: "center",
+              gap: 6,
+              marginVertical: 24,
+            }}
+          >
+            <Text style={{ fontSize: 16, color: "white" }}>
+              Erro ao fazer login
+            </Text>
+            <Text style={{ color: colors.gray[400] }}>
+              {errorMessage || "Empty"}
+            </Text>
+          </View>
+
+          <View style={{ width: "80%" }}>
+            <Button
+              variant="secondary"
+              onPress={() => {
+                bottomSheetRef.current?.close();
+              }}
+            >
+              <Button.Title style={{ color: "red" }}>Fechar</Button.Title>
+            </Button>
+          </View>
+        </BottomSheetComponent>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );
