@@ -1,3 +1,5 @@
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+
 import { View } from "react-native";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import Routes from "@/routes";
@@ -17,8 +19,10 @@ const AuthenticatedApp = () => {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <AuthenticatedApp />
-    </AuthProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <AuthProvider>
+        <AuthenticatedApp />
+      </AuthProvider>
+    </GestureHandlerRootView>
   );
 }
