@@ -9,6 +9,8 @@ import {
 import { Feather } from "@expo/vector-icons";
 import { styles } from "./styles";
 
+import { z, ZodError } from "zod";
+
 import { Button, Input } from "@/components";
 import { useRef, useState } from "react";
 import { colors } from "@/styles/colors";
@@ -18,6 +20,12 @@ import { Link } from "@react-navigation/native";
 import BottomSheet from "@gorhom/bottom-sheet";
 
 import { BottomSheetComponent } from "@/components/BottomSheet";
+
+const signupSchema = z.object({
+  username: z.string().min(3, "O nome precisa ter pelo menos 3 letras"),
+  email: z.string().email("Email inválido"),
+  password: z.string().min(5, "A senha precisa ter pelo menos 6 letras"),
+});
 
 export function Signup() {
   const [username, setUsername] = useState("");
@@ -40,6 +48,13 @@ export function Signup() {
       setIsLoading(true);
       Keyboard.dismiss();
 
+      const valid = signupSchema.parse({
+        username: username,
+        email: email,
+        password: password,
+      });
+      console.log(valid.username);
+
       if (
         !username.trim() ||
         !email.trim() ||
@@ -58,13 +73,14 @@ export function Signup() {
         email: email,
         password: password,
       });
-    } catch (error: any) {
-      if (error instanceof Error) {
-        setErrorMessage(error.message);
-      } else {
-        setErrorMessage("Erro inesperado ao cadastrar usuário");
-        console.log("Erro ao cadastrar usuário:", error.message);
+    } catch (error: unknown) {
+      if (error instanceof ZodError) {
+        // alert(error.errors.map((err) => err.message).join("\n"));
+        alert(error.errors[0].message);
+      } else if (error instanceof Error) {
+        alert(error.message);
       }
+      console.log("Erro ao fazer login", error);
     } finally {
       bottomSheetRef.current?.expand();
       setIsLoading(false);
