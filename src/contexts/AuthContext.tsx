@@ -71,10 +71,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const response = await loginRequest({ username, password });
       console.log({ response });
 
-      if (!response?.user) {
-        throw new Error("Resposta do servidor inválida");
-      }
-
       setUser(response.user);
       await saveToken(response.token);
     } catch (error: unknown) {

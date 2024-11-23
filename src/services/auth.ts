@@ -1,4 +1,5 @@
 import { api } from "./api";
+import axios from "axios";
 
 interface LoginProps {
   username: string;
@@ -33,11 +34,17 @@ export const loginRequest = async ({ username, password }: LoginProps) => {
       user: response.data.user,
     };
   } catch (error: any) {
-    if (error.response && error.response.data) {
-      throw Error(error.response.data.message);
-    } else {
-      console.error(error.message);
+    if (axios.isAxiosError(error)) {
+      throw new Error(
+        error.response?.data?.message || "Erro inesperado ao fazer login"
+      );
     }
+
+    if (error.response && error.response.data) {
+      throw new Error(error.response.data.message);
+    }
+
+    throw new Error(error.message);
   }
 };
 
@@ -58,10 +65,17 @@ export const signupRequest = async ({
       user: response.data.user,
     };
   } catch (error: any) {
-    if (error.response && error.response.data) {
-      throw Error(error.response.data.message);
-    } else {
-      console.error(error.message);
+    if (axios.isAxiosError(error)) {
+      throw new Error(
+        error.response?.data?.message ||
+          "Erro inesperado ao realizar o cadastro"
+      );
     }
+
+    if (error.response && error.response.data) {
+      throw new Error(error.response.data.message);
+    }
+
+    throw new Error(error.message);
   }
 };
