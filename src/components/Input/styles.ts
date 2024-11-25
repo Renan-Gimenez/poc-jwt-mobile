@@ -1,5 +1,5 @@
 import { colors } from "@/styles/colors";
-import { StyleSheet } from "react-native";
+import { Platform, StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   container: {
@@ -7,7 +7,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 4,
     backgroundColor: colors.gray[800],
-    paddingVertical: 12,
+    paddingVertical: Platform.OS === "ios" ? 12 : 4,
     paddingHorizontal: 16,
     gap: 12,
   },
