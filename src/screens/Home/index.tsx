@@ -1,10 +1,8 @@
-import { Button as RNButton, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import { useAuth } from "@/contexts/AuthContext";
-import { styles } from "./styles";
-
-// import { SafeAreaView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { colors } from "@/styles/colors";
+import { styles } from "./styles";
 
 import { Feather } from "@expo/vector-icons";
 
@@ -17,10 +15,14 @@ export function Home() {
     <SafeAreaView style={styles.container}>
       <Text style={{ color: colors.cyan[300] }}>Home Screen</Text>
 
-      <Text
-        style={{ color: colors.cyan[300] }}
-      >{`Username: ${user?.username}`}</Text>
-      <Text style={{ color: colors.cyan[300] }}>{`Email: ${user?.email}`}</Text>
+      <View style={{ marginVertical: 24 }}>
+        <Text
+          style={{ color: colors.cyan[300] }}
+        >{`Username: ${user?.username}`}</Text>
+        <Text
+          style={{ color: colors.cyan[300] }}
+        >{`Email: ${user?.email}`}</Text>
+      </View>
 
       <Button onPress={logout}>
         <Feather name="log-out" color="black" size={24} />

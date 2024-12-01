@@ -9,6 +9,8 @@ import {
 import { Feather } from "@expo/vector-icons";
 import { styles } from "./styles";
 
+import { z, ZodError } from "zod";
+
 import { Button, Input } from "@/components";
 import { useRef, useState } from "react";
 import { colors } from "@/styles/colors";
@@ -18,6 +20,32 @@ import { Link } from "@react-navigation/native";
 import BottomSheet from "@gorhom/bottom-sheet";
 
 import { BottomSheetComponent } from "@/components/BottomSheet";
+
+const signupSchema = z
+  .object({
+    username: z
+      .string()
+      .min(4, "O campo 'usuário' precisa ter pelo menos 4 caracteres")
+      .max(20, "O campo 'usuário' não pode exceder 20 caracteres")
+      .trim()
+      .regex(
+        /^[a-z0-9_.]+$/,
+        "O campo 'usuário' só pode conter letras minúsculas, números, '_' e '.'"
+      ),
+
+    email: z.string().email("Formato de email inválido").trim(),
+
+    password: z
+      .string()
+      .min(6, "A senha precisa ter pelo menos 6 caracteres")
+      .max(100, "A senha não pode exceder 100 caracteres"),
+
+    confirmpassword: z.string({ required_error: "Confirme sua senha" }),
+  })
+  .refine((data) => data.password === data.confirmpassword, {
+    message: "As senhas precisam ser iguais",
+    path: ["confirmpassword"],
+  });
 
 export function Signup() {
   const [username, setUsername] = useState("");
@@ -40,31 +68,25 @@ export function Signup() {
       setIsLoading(true);
       Keyboard.dismiss();
 
-      if (
-        !username.trim() ||
-        !email.trim() ||
-        !password.trim() ||
-        !confirmpassword.trim()
-      ) {
-        throw Error("Preencha todos os campos");
-      }
-
-      if (password !== confirmpassword) {
-        throw Error("As senhas precisam ser iguais");
-      }
+      signupSchema.parse({
+        username: username,
+        email: email,
+        password: password,
+        confirmpassword: confirmpassword,
+      });
 
       await signup({
         username: username,
         email: email,
         password: password,
       });
-    } catch (error: any) {
-      if (error instanceof Error) {
+    } catch (error: unknown) {
+      if (error instanceof ZodError) {
+        setErrorMessage(error.errors[0].message);
+      } else if (error instanceof Error) {
         setErrorMessage(error.message);
-      } else {
-        setErrorMessage("Erro inesperado ao cadastrar usuário");
-        console.log("Erro ao cadastrar usuário:", error.message);
       }
+      console.log("Erro ao fazer login", error);
     } finally {
       bottomSheetRef.current?.expand();
       setIsLoading(false);
@@ -73,7 +95,7 @@ export function Signup() {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <KeyboardAvoidingView style={styles.container}>
+      <KeyboardAvoidingView style={styles.container} behavior="padding">
         <View
           style={{
             width: "90%",
@@ -194,7 +216,7 @@ export function Signup() {
             }}
           >
             <Text style={{ fontSize: 16, color: "white" }}>
-              Erro ao fazer login
+              Erro ao criar conta
             </Text>
             <Text style={{ color: colors.gray[400] }}>
               {errorMessage || "Empty"}
