@@ -74,7 +74,7 @@ export function Login() {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <KeyboardAvoidingView style={styles.container}>
+      <KeyboardAvoidingView style={styles.container} behavior="padding">
         <View style={{ marginBottom: 40, alignItems: "center" }}>
           <Text style={styles.title}>Login JWT</Text>
           <Text style={styles.subtitle}>Faça login e comece a usar!</Text>
