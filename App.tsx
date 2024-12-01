@@ -1,4 +1,5 @@
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { StatusBar } from "expo-status-bar";
 
 import { View } from "react-native";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
@@ -23,6 +24,8 @@ export default function App() {
       <AuthProvider>
         <AuthenticatedApp />
       </AuthProvider>
+
+      <StatusBar translucent style="light" />
     </GestureHandlerRootView>
   );
 }
